@@ -33,20 +33,23 @@ function App() {
           map['마스크'] = 0;
           map['에센스'] = 0;
 
+          // for(var i=0; i<data.length; i++){
+          //   for(var j=0; j<list.length; j++){
+          //     if(data[0]["한국제품명"].indexOf(list[j]) > 0){
+          //       map[list[j]] =  map[list[j]] + 1;
+          //       console.log("들어옴");
+          //     }
+
+          //   }
+          // }
+
           for(var i=0; i<data.length; i++){
-            for(var j=0; j<list.length; j++){
-              if(data[0]["한국제품명"].indexOf(list[j]) > 0){
-                map[list[j]] =  map[list[j]] + 1;
-              }
-
+            if(data[0]["한국제품명"].indexOf(list[j]) > 0){
+              map[list[j]] =  map[list[j]] + 1;
+              console.log("들어옴");
             }
-          }
 
-          for(j=0; j<list.size; j++){
-            console.log(map[list[j]]);
           }
-          
-
 
           const worksheet = XLSX.utils.json_to_sheet(data);
           XLSX.utils.book_append_sheet(workbook, worksheet, wsname);
@@ -55,11 +58,6 @@ function App() {
         });
         XLSX.writeFile(wb, 'Test.xlsx');
 
-        // const wsname = wb.SheetNames[0];
-        // const ws = wb.Sheets[wsname];
-        // const data = XLSX.utils.sheet_to_json(ws);
-
-        // resolve(data);
       };
 
       fileReader.onerror = (error) => {
@@ -68,13 +66,13 @@ function App() {
     });
 
     promise.then((d) => {
-      const ws = XLSX.utils.json_to_sheet(d);
+      // const ws = XLSX.utils.json_to_sheet(d);
 
-      const wb = XLSX.utils.book_new();
+      // const wb = XLSX.utils.book_new();
 
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      // XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-      XLSX.writeFile(wb, 'Test.xlsx');
+      // XLSX.writeFile(wb, 'Test.xlsx');
 
     });
   };
