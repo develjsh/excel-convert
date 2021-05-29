@@ -4,6 +4,9 @@ import * as XLSX from 'xlsx';
 
 function App() {
   const readExcel = (file) => {
+    if(!file){
+      return
+    }
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(file);
@@ -51,9 +54,11 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="box">
+      <label htmlFor="ex_file">엑셀 파일 업로드</label>
       <input
         type="file"
+        id="ex_file"
         onChange={(e) => {
           const file = e.target.files[0];
           readExcel(file);
