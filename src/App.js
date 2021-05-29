@@ -8,56 +8,60 @@ function App() {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(file);
       fileReader.onload = (e) => {
+        let data = [];
         const bufferArray = e.target.result;
 
-        const wb = XLSX.read(bufferArray, { type: 'buffer' });
-        // console.log(wb.SheetNames.length);
+        const workbook = XLSX.read(bufferArray, { type: 'buffer' });
+        const nWorkBook = XLSX.utils.book_new();
+        workbook.SheetNames.map((unit, idx) => {
+          const wsname = workbook.SheetNames[idx];
+          data = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
+          const lib = data.filter(n => n.한국제품명.includes('립'));
+          const blush = data.filter(n => n.한국제품명.includes('블러쉬'));
+          const nail = data.filter(n => n.한국제품명.includes('네일'));
+          const consiler = data.filter(n => n.한국제품명.includes('컨실러'));
+          const chick = data.filter(n => n.한국제품명.includes('치크'));
+          const cleanger = data.filter(n => n.한국제품명.includes('클렌저'));
+          const cream = data.filter(n => n.한국제품명.includes('크림'));
+          const mask = data.filter(n => n.한국제품명.includes('마스크'));
+          const essense = data.filter(n => n.한국제품명.includes('에센스'));
+          // const sheetData = [
+          //   {'립': lib.length}, 
+          //   {'블러쉬' : blush.length},
+          //   {'네일' : nail.length}, 
+          //   {'컨실러' : consiler.length}, 
+          //   {'치크' : chick.length}, 
+          //   {'클렌저' : cleanger.length}, 
+          //   {'크림' : cream.length},
+          //   {'마스크' : mask.length}, 
+          //   {'에센스' : essense.length}
+          // ];
+          
+          // const sheetData = [];
+          const myheader = ['이름', '갯수'];
+          // sheetData.push(['립', lib.length]);
+          // sheetData.push(['블러쉬', blush.length]);
+          // sheetData.push(['네일', nail.length]);
+          // sheetData.push(['컨실러', consiler.length]);
+          // sheetData.push(['치크', chick.length]);
+          // sheetData.push(['클렌저', cleanger.length]);
+          // sheetData.push(['크림', cream.length]);
+          // sheetData.push(['마스크', mask.length]);
+          // sheetData.push(['에센스', essense.length]);
+          const names = ['립', '블러쉬', '네일', '컨실러', '치크', '클렌저', '크림', '마스크', '에센스'];
+          const num = [lib.length, blush.length, nail.length, consiler.length, chick.length, cleanger.length, cream.length, mask.length, essense.length];
+          const sheetData = [];
+          names.map((unit, idx) =>{
+            sheetData.push({"이름" : names[idx], "갯수" : num[idx]});
+          });
 
-        const list = ['립','블러쉬','네일','컨실러','치크','클렌저','크림','마스크','에센스']
+          
 
-        const workbook = XLSX.utils.book_new();
-        const aloop = wb.SheetNames.map((unit, idx) => {
-          const wsname = wb.SheetNames[idx];
-          const ws = wb.Sheets[wsname];
-          const data = XLSX.utils.sheet_to_json(ws);
+          const worksheet = XLSX.utils.json_to_sheet(sheetData);
+          XLSX.utils.book_append_sheet(nWorkBook, worksheet, wsname);
 
-          // 1개의 시트 전체 다 indexOf 해서 숫자 계산하기
-          const map =  {};
-          map['립'] = 0;
-          map['블러쉬'] = 0;
-          map['네일'] = 0;
-          map['컨실러'] = 0;
-          map['치크'] = 0;
-          map['클렌터'] = 0;
-          map['크림'] = 0;
-          map['마스크'] = 0;
-          map['에센스'] = 0;
-
-          // for(var i=0; i<data.length; i++){
-          //   for(var j=0; j<list.length; j++){
-          //     if(data[0]["한국제품명"].indexOf(list[j]) > 0){
-          //       map[list[j]] =  map[list[j]] + 1;
-          //       console.log("들어옴");
-          //     }
-
-          //   }
-          // }
-
-          for(var i=0; i<data.length; i++){
-            if(data[0]["한국제품명"].indexOf(list[j]) > 0){
-              map[list[j]] =  map[list[j]] + 1;
-              console.log("들어옴");
-            }
-
-          }
-
-          const worksheet = XLSX.utils.json_to_sheet(data);
-          XLSX.utils.book_append_sheet(workbook, worksheet, wsname);
-
-          return unit;
         });
-        XLSX.writeFile(wb, 'Test.xlsx');
-
+        resolve(nWorkBook);
       };
 
       fileReader.onerror = (error) => {
@@ -66,13 +70,7 @@ function App() {
     });
 
     promise.then((d) => {
-      // const ws = XLSX.utils.json_to_sheet(d);
-
-      // const wb = XLSX.utils.book_new();
-
-      // XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-      // XLSX.writeFile(wb, 'Test.xlsx');
+      XLSX.writeFile(d, 'Test.xlsx');
 
     });
   };
