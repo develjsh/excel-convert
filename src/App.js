@@ -8,58 +8,34 @@ function App() {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(file);
       fileReader.onload = (e) => {
+        let data = [];
         const bufferArray = e.target.result;
 
-        const wb = XLSX.read(bufferArray, { type: 'buffer' });
-        // console.log(wb.SheetNames.length);
+        const workbook = XLSX.read(bufferArray, { type: 'buffer' });
 
-        const list = ['립','블러쉬','네일','컨실러','치크','클렌저','크림','마스크','에센스']
-
-        const workbook = XLSX.utils.book_new();
-        const aloop = wb.SheetNames.map((unit, idx) => {
-          const wsname = wb.SheetNames[idx];
-          const ws = wb.Sheets[wsname];
-          const data = XLSX.utils.sheet_to_json(ws);
-
-          // 1개의 시트 전체 다 indexOf 해서 숫자 계산하기
-          const map =  {};
-          map['립'] = 0;
-          map['블러쉬'] = 0;
-          map['네일'] = 0;
-          map['컨실러'] = 0;
-          map['치크'] = 0;
-          map['클렌터'] = 0;
-          map['크림'] = 0;
-          map['마스크'] = 0;
-          map['에센스'] = 0;
-
-          for(var i=0; i<data.length; i++){
-            for(var j=0; j<list.length; j++){
-              if(data[0]["한국제품명"].indexOf(list[j]) > 0){
-                map[list[j]] =  map[list[j]] + 1;
-              }
-
-            }
-          }
-
-          for(j=0; j<list.size; j++){
-            console.log(map[list[j]]);
-          }
-          
-
-
-          const worksheet = XLSX.utils.json_to_sheet(data);
-          XLSX.utils.book_append_sheet(workbook, worksheet, wsname);
-
-          return unit;
+        workbook.SheetNames.forEach(function(sheetName) {
+          data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
         });
-        XLSX.writeFile(wb, 'Test.xlsx');
 
-        // const wsname = wb.SheetNames[0];
-        // const ws = wb.Sheets[wsname];
-        // const data = XLSX.utils.sheet_to_json(ws);
+        const lib = data.filter(n => n.한국제품명.includes('립'));
+        const blush = data.filter(n => n.한국제품명.includes('블러쉬'));
+        const nail = data.filter(n => n.한국제품명.includes('네일'));
+        const consiler = data.filter(n => n.한국제품명.includes('컨실러'));
+        const chick = data.filter(n => n.한국제품명.includes('치크'));
+        const cleanger = data.filter(n => n.한국제품명.includes('클렌저'));
+        const cream = data.filter(n => n.한국제품명.includes('크림'));
+        const mask = data.filter(n => n.한국제품명.includes('마스크'));
+        const essense = data.filter(n => n.한국제품명.includes('에센스'));
+        console.log(lib)
+        console.log(blush)
+        console.log(nail)
+        console.log(consiler)
+        console.log(chick)
+        console.log(cleanger)
+        console.log(cream)
+        console.log(mask)
+        console.log(essense)
 
-        // resolve(data);
       };
 
       fileReader.onerror = (error) => {
@@ -68,13 +44,8 @@ function App() {
     });
 
     promise.then((d) => {
-      const ws = XLSX.utils.json_to_sheet(d);
 
-      const wb = XLSX.utils.book_new();
-
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-      XLSX.writeFile(wb, 'Test.xlsx');
+      XLSX.writeFile(d, 'Test.xlsx');
 
     });
   };
